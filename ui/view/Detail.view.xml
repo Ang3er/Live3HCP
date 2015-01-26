@@ -1,0 +1,24 @@
+<mvc:View controllerName="live3.view.Detail" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core">
+
+    <Page title="{i18n>DETAIL_TITLE}" class="sapUiFioriObjectPage" showNavButton="{device>/isPhone}" navButtonPress="handleNavButtonPress">
+
+        <ObjectHeader title="Cluster {clusterNumber}" number="{users}" numberUnit="Tweeters">
+            <attributes>
+                <ObjectAttribute text="Influence:{influence}, Stance:{stance}" />
+            </attributes>
+        </ObjectHeader>
+
+        <List items="{Tweeters}" mode="{device>/listMode}" select="handleSelect" growing="true" growingScrollToLoad="true">
+            <items>
+                <ObjectListItem type="{device>/listItemType}" title="@{user}" number="{tweetCount}" numberUnit="Tweets" press="handleSelect">
+
+                    <attributes>
+                        <ObjectAttribute id="attr1" text="Influence:{influence}, Stance:{stance}" />
+                    </attributes>
+                </ObjectListItem>
+            </items>
+        </List>
+
+    </Page>
+
+</mvc:View>
