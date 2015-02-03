@@ -1,17 +1,34 @@
 jQuery.sap.require("sap.m.MessageToast");
-
 var servicesPath = "/destinations/hanaxs/p000trial/dev/live3/";
 
-sap.ui.core.mvc.Controller.extend("live3.view.Master", {
+	onSearch : function() {
+		// Add search filter
+		var filters = [];
+		var searchString = this.getView().byId("master1SearchField").getValue();
+		if (searchString && searchString.length > 0) {
+			filters = [ new sap.ui.model.Filter("clusterNumber", sap.ui.model.FilterOperator.EQ, searchString) ];
+		}
 
-	handleSelect: function(oEvent) {
-		var oListItem = oEvent.getParameter("listItem") || oEvent.getSource();
+		// Update list binding
+		this.getView().byId("master1List").getBinding("items").filter(filters);
+	},
 
-		// trigger routing to BindingPath of this ListItem - this will update the data on the detail page
-		sap.ui.core.UIComponent.getRouterFor(this).navTo("Detail", {
-			from: "master",
-			contextPath: oListItem.getBindingContext().getPath().substr(1)
+	handleRefresh: function() {
+		$.ajax({
+			url: servicesPath + "services.xsodata/Tweets/$count",
+			type: "get",
+			error: function() {},
+			success: function(data) {
+				jQuery.sap.require("sap.m.MessageToast");
+				sap.m.MessageToast.show("Tweets: " + data, {
+					duration: 1000,
+					my: "center top",
+					at: "center top"
+				});
+			}
 		});
+		this.getView().getModel().refresh();
+		this.getView().byId("pullToRefresh").hide();
 	},
 
 	handleStartDialog: function() {
@@ -84,23 +101,3 @@ sap.ui.core.mvc.Controller.extend("live3.view.Master", {
 		});
 		this.getView().getModel().refresh();
 	},
-
-	handleRefresh: function() {
-		$.ajax({
-			url: servicesPath + "services.xsodata/Tweets/$count",
-			type: "get",
-			error: function() {},
-			success: function(data) {
-				jQuery.sap.require("sap.m.MessageToast");
-				sap.m.MessageToast.show("Tweets: " + data, {
-					duration: 1000,
-					my: "center top",
-					at: "center top"
-				});
-			}
-		});
-		this.getView().getModel().refresh();
-		this.getView().byId("pullToRefresh").hide();
-	}
-
-});
